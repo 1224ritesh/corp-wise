@@ -52,21 +52,20 @@ const NavBar = () => {
           <span>Sign In</span>
           {}
           {!currentUser?.isMember && <span>Become a Service provider</span>}
-          {!currentUser && <button>Join</button>}
 
-          {currentUser && (
+          {currentUser ? (
             <div className="user" onClick={() => setOpen(!open)}>
               <img src={currentUser.img || "/img/user.png"} alt="" />
-              <span>{currentUser?.userName}</span>
+              <span>{currentUser?.username}</span>
               {open && (
                 <div className="options">
-                  {currentUser?.isMember && (
+                  {currentUser.isSeller && (
                     <>
-                      <Link className="link" to="/myservices">
-                        My Services
+                      <Link className="link" to="/mygigs">
+                        Gigs
                       </Link>
-                      <Link className="link" to="/addservices">
-                        Add New Service
+                      <Link className="link" to="/add">
+                        Add New Gig
                       </Link>
                     </>
                   )}
@@ -82,6 +81,15 @@ const NavBar = () => {
                 </div>
               )}
             </div>
+          ) : (
+            <>
+              <Link to="/login" className="link">
+                Sign in
+              </Link>
+              <Link className="link" to="/register">
+                <button>Join</button>
+              </Link>
+            </>
           )}
         </div>
       </div>

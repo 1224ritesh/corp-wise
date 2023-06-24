@@ -48,9 +48,9 @@ export const login = async (req, res, next) => {
             isSeller: user.isSeller,
         },
             process.env.JWT_KEY,
-            {
-                expiresIn: '2 days'
-            }// added later
+            // {
+            //     expiresIn: '2 days'
+            // }// added later
         );
 
         // if password is correct then send user info without password 
@@ -58,7 +58,7 @@ export const login = async (req, res, next) => {
         const { password, ...info } = user._doc;
         res.cookie("accessToken", token, {
             httpOnly: true,
-            maxAge: 2 * 24 * 60 * 60 * 1000, // 2 days added later
+            // maxAge: 2 * 24 * 60 * 60 * 1000, // 2 days added later
         }).status(200).send(info)
 
     }
@@ -68,8 +68,8 @@ export const login = async (req, res, next) => {
 };
 
 export const logout = async (req, res) => {
-      res.cookie("accessToken", "", {
+    res.clearCookie("accessToken", {
         sameSite: "none",
         secure: true,
-      }).status(200).send("User has been logged out");
+    }).status(200).send("User has been logged out");
 };

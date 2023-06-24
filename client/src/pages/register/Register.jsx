@@ -1,8 +1,10 @@
-import  { useState } from "react";
-// import upload from "../../utils/upload";
+import { useState } from "react";
+
 import "./Register.scss";
-import newRequest from "../../utils/newRequest";
+
 import { useNavigate } from "react-router-dom";
+import  newRequest  from "../../utils/newRequest.js";
+import  upload  from "../../utils/upload.js";
 
 function Register() {
   const [file, setFile] = useState(null);
@@ -11,7 +13,7 @@ function Register() {
     email: "",
     password: "",
     img: "",
-    country: "",
+    state: "",
     isSeller: false,
     desc: "",
   });
@@ -32,16 +34,16 @@ function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // const url = await upload(file);
-    // try {
-    //   await newRequest.post("/auth/register", {
-    //     ...user,
-    //     img: url,
-    //   });
-    //   navigate("/")
-    // } catch (err) {
-    //   console.log(err);
-    // }
+    const url = await upload(file);
+    try {
+      await newRequest.post("/auth/register", {
+        ...user,
+        img: url,
+      });
+      navigate("/")
+    } catch (err) {
+      console.log(err);
+    }
   };
   return (
     <div className="register">
@@ -52,7 +54,7 @@ function Register() {
           <input
             name="username"
             type="text"
-            placeholder="johndoe"
+            placeholder="username"
             onChange={handleChange}
           />
           <label htmlFor="">Email</label>
@@ -66,19 +68,19 @@ function Register() {
           <input name="password" type="password" onChange={handleChange} />
           <label htmlFor="">Profile Picture</label>
           <input type="file" onChange={(e) => setFile(e.target.files[0])} />
-          <label htmlFor="">Country</label>
+          <label htmlFor="">State</label>
           <input
-            name="country"
+            name="State"
             type="text"
-            placeholder="Usa"
+            placeholder="State"
             onChange={handleChange}
           />
           <button type="submit">Register</button>
         </div>
         <div className="right">
-          <h1>I want to become a seller</h1>
+          <h1>I want to become a Service Provider</h1>
           <div className="toggle">
-            <label htmlFor="">Activate the seller account</label>
+            <label htmlFor="">Activate the CA & CS account</label>
             <label className="switch">
               <input type="checkbox" onChange={handleSeller} />
               <span className="slider round"></span>
@@ -88,7 +90,7 @@ function Register() {
           <input
             name="phone"
             type="text"
-            placeholder="+1 234 567 89"
+            placeholder="+ 91 9933663399"
             onChange={handleChange}
           />
           <label htmlFor="">Description</label>

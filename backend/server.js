@@ -31,7 +31,8 @@ const connect = async () => {
 };
 
 
-app.use(cors({ origin: "http://localhost:5173", credential: false }));
+app.use(cors({ origin: "http://localhost:5173", credential: false, }));
+// app.use(cors( "http://localhost:5173" ));
 
 // middleware for parsing json 
 app.use(express.json());
