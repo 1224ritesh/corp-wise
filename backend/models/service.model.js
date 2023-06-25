@@ -16,11 +16,11 @@ const ServiceSchema = new Schema({
     },
     totalStars: {
         type: Number,
-        required: 0,
+        default: 0,
     },
     starNumber: {
         type: Number,
-        required: 0,
+        default: 0,
     },
     cat: {
         type: String,
@@ -38,10 +38,7 @@ const ServiceSchema = new Schema({
         type: [String],
         required: false,
     },
-    userId: {
-        type: String,
-        required: true,
-    },
+    
     shortTitle: {
         type: String,
         required: true,
