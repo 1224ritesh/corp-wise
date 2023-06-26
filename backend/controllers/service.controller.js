@@ -44,33 +44,35 @@ export const getService = async (req, res, next) => {
     }
 }
 export const getServices = async (req, res, next) => {
+    // for searching the services by category
+    const query = req.query;
+
+    const filters = {
+        //     ...(query.userId && { userId: query.userId }),
+        //     ...(query.cat && { cat: query.cat }),
+        //     $and:[
+        //         {...(query.min && { price:{$gte: parseInt(query.min)} })}, 
+        //         {...(query.max && { price:{$lte: parseInt(query.max)} })}
+        //     ],
+        //     ...(query.search && { title: { $regex: query.search, $options: "i" } }),
+        // }
+        // // console.log(filters)
+
+        ...(query.userId && { userId: q.userId }),
+        ...(query.cat && { cat: query.cat }),
+        ...((query.min || query.max) && {
+            price: {
+                ...(query.min && { $gte: query.min }),
+                ...(query.max && { $lte: query.max }),
+            },
+        }),
+        ...(query.search && { title: { $regex: query.search, $options: "i" } }),
+    };
     try {
-        // for searching the services by category
-        const query = req.query;
-
-        const filters = {
-            ...(query.userId && { userId: query.userId }),
-            ...(query.cat && { cat: query.cat }),
-            // ...((query.min || query.max) && { 
-            //     price: { $and:[ 
-            //         (query.min && { $gt: parseInt(query.min) }), 
-            //         (query.max && { $lt: parseInt(query.max) })]
-                   
-            //     }, 
-            // }),
-            $and:[
-                {...(query.min && { price:{$gte: parseInt(query.min)} })}, 
-                {...(query.max && { price:{$lte: parseInt(query.max)} })}
-            ],
-            ...(query.search && { title: { $regex: query.search, $options: "i" } }),
-        }
-
-        // console.log(filters)
-
-        const services = await Service.find(filters);
- 
-
+        const services = await Service.find(filters).sort({ [query.sort]: -1 });
         res.status(200).send(services);
+
+
     } catch (err) {
         console.log(err)
         next(err);

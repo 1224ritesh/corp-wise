@@ -49,9 +49,8 @@ const NavBar = () => {
           <span>Business</span>
           <span>Explore</span>
           <span>Law & Regulations</span>
-          <span>Sign In</span>
           {}
-          {!currentUser?.isMember && <span>Become a Service provider</span>}
+          {!currentUser?.isSeller && <span>Become a Service provider</span>}
 
           {currentUser ? (
             <div className="user" onClick={() => setOpen(!open)}>
