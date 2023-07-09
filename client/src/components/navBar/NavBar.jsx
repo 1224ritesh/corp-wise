@@ -60,11 +60,11 @@ const NavBar = () => {
                 <div className="options">
                   {currentUser.isSeller && (
                     <>
-                      <Link className="link" to="/mygigs">
-                        Gigs
+                      <Link className="link" to="/myservices">
+                        My Service
                       </Link>
-                      <Link className="link" to="/add">
-                        Add New Gig
+                      <Link className="link" to="/addservices">
+                        Add New Service
                       </Link>
                     </>
                   )}

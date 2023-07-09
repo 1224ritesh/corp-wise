@@ -15,7 +15,7 @@ const ServiceCard = ({ item }) => {
   });
 
   return (
-    <Link to= {`/service/${item._id}`} className="link">
+    <Link to={`/service/${item._id}`} className="link">
       <div className="serviceCard">
         <img src={item.cover} alt="" />
         <div className="info">
@@ -32,7 +32,10 @@ const ServiceCard = ({ item }) => {
           <p>{item.desc}</p>
           <div className="star">
             <img src="./img/star.png" alt="" />
-            <span>{!isNaN(Math.round(item.totalStars / item.starNumber)) && Math.round(item.totalStars / item.starNumber)}</span>
+            <span>
+              {!isNaN(Math.round(item.totalStars / item.starNumber)) &&
+                Math.round(item.totalStars / item.starNumber)}
+            </span>
           </div>
         </div>
         <hr />

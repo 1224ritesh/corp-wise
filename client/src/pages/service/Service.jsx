@@ -1,276 +1,182 @@
 // single service page where if the user clicks on the LLP then user enter to that only LLP service page.
 
+import { useQuery } from "@tanstack/react-query";
+import newRequest from "../../utils/newRequest";
 import "./Service.scss";
 import { Slider } from "infinite-react-carousel/lib";
+import { useParams } from "react-router-dom";
+import Reviews from "../../components/reviews/Reviews";
 
 const Service = () => {
+  const { id } = useParams();
+
+  const { isLoading, error, data } = useQuery({
+    queryKey: ["service"],
+    queryFn: () =>
+      newRequest
+        .get(
+          `/services/single/${id}` // this is the url that we want to hit to get the data from the database and return it to the component that is using this hook (useQuery)
+        )
+        .then((res) => {
+          return res.data; // this is the data that will be returned to the component
+        }),
+  });
+
+  const userId = data?.userId;  // this is the userId that we are getting from the data that we are getting from the database.
+  const {
+    isLoading: isloadingUser,
+    error: errorUser,
+    data: dataUser,
+  } = useQuery({
+    queryKey: ["user"],
+    queryFn: () =>
+      newRequest
+        .get(
+          `/users/${userId}` // this is the url that we want to hit to get the data from the database and return it to the component that is using this hook (useQuery)
+        )
+        .then((res) => {
+          return res.data; // this is the data that will be returned to the component
+        }),
+
+        // this is the condition that if the userId is present then only the query will run otherwise not.
+        enabled: !!userId, 
+  });
+
   return (
     <div className="service">
-      <div className="container">
-        <div className="left">
-          <span className="breadCrumbs">Corp-Wise &gt; Tax &gt; </span>
-          <h1>Solve any TAX related issues</h1>
-          <div className="user">
-            <img
-              className="pp"
-              src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
-              alt=""
-            />
-            <span>Ritesh Sharma</span>
-            <div className="stars">
-              <img src="/img/star.png" alt="" />
-              <img src="/img/star.png" alt="" />
-              <img src="/img/star.png" alt="" />
-              <img src="/img/star.png" alt="" />
-              <img src="/img/star.png" alt="" />
-              <span>5</span>
-            </div>
+      {isLoading ? (
+        "loading"
+      ) : error ? (
+        "something went wrong"
+      ) : (
+        <div className="container">
+          <div className="left">
+            <span className="breadCrumbs">
+              Corp-Wise {">"} Tax {">"}{" "}
+            </span>
+            <h1>{data.title}</h1>
+            {isloadingUser ? (
+              "loading"
+            ) : errorUser ? (
+              "something went worng!"
+            ) : (
+              // if the user is not logged in then the user will not be able to rate the service.
+              <div className="user">
+                <img
+                  className="pp"
+                  src={dataUser.img || "/img/user.png"}
+                  alt=""
+                />
+                <span>{dataUser.username}</span>
+                {!isNaN(Math.round(data.totalStars / data.starNumber)) && (
+                  <div className="stars">
+                    {Array(Math.round(data.totalStars / data.starNumber))
+                      .fill()
+                      .map((item, i) => (
+                        <img src="/img/star.png" alt="" key={i} />
+                      ))}
+                    <span>{Math.round(data.totalStars / data.starNumber)}</span>
+                  </div>
+                )}
+              </div>
+            )}
+
+            <Slider slidesToShow={1} arrowScroll={1} className="slider">
+              {data.images.map((img) => (
+                <img key={img} src={img} alt="" />
+              ))}
+            </Slider>
+
+            <h2>About Tax</h2>
+            <p>{data.desc}</p>
+
+            {isloadingUser ? (
+              "loading"
+            ) : errorUser ? (
+              "something went wrong!"
+            ) : (
+              <div className="seller">
+                <h2>About the Firm</h2>
+                <div className="user">
+                  <img src={dataUser.img || "/img/user.png"} alt="" />
+
+                  <div className="info">
+                    <span>{dataUser.username}</span>
+                    {!isNaN(Math.round(data.totalStars / data.starNumber)) && (
+                      <div className="stars">
+                        {Array(Math.round(data.totalStars / data.starNumber))
+                          .fill()
+                          .map((item, i) => (
+                            <img src="/img/star.png" alt="" key={i} />
+                          ))}
+                        <span>
+                          {Math.round(data.totalStars / data.starNumber)}
+                        </span>
+                      </div>
+                    )}
+                    <button>Contact Us</button>
+                  </div>
+                </div>
+                <div className="box">
+                  <div className="items">
+                    <div className="item">
+                      <span className="title">From</span>
+                      <span className="desc">{dataUser.states}</span>
+                    </div>
+                    <div className="item">
+                      <span className="title">Member</span>
+                      <span className="desc">June 2023</span>
+                    </div>
+                    {/* <div className="item">
+                      <span className="title">Avg. response time</span>
+                      <span className="desc">2 hrs</span>
+                    </div>
+                    <div className="item">
+                      <span className="title">Last delivery</span>
+                      <span className="desc">1 day</span>
+                    </div> */}
+                    {/* <div className="item">
+                      <span className="title">Language</span>
+                      <span className="desc">English</span>
+                    </div> */}
+                  </div>
+                  <hr />
+                  <p>{dataUser.desc}</p>
+                </div>
+              </div>
+            )}
+            
+            <Reviews serviceId={id}></Reviews>
+
           </div>
-
-          <Slider slidesToShow={1} arrowScroll={1} className="slider">
-            <img
-              src="https://desk.zoho.com/DocsDisplay?zgId=675425301&mode=inline&blockId=6axszf3edb0915afa458d970b1d60ef80224f"
-              alt=""
-            />
-            <img
-              src="https://i0.wp.com/certicom.in/wp-content/uploads/2018/09/Income-Tax-Audit.jpg?w=700&ssl=1"
-              alt=""
-            />
-
-            <img
-              src="https://www.slideteam.net/media/catalog/product/cache/1280x720/s/e/service_tax_audit_procedure_ppt_powerpoint_presentation_summary_smartart_cpb_slide01.jpg"
-              alt=""
-            />
-          </Slider>
-
-          <h2>About Tax</h2>
-          <p>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Corrupti
-            rerum nobis minima eum beatae nostrum blanditiis praesentium maxime,
-            voluptates facilis amet nihil consequuntur officiis, dolores, ipsum
-            architecto expedita eaque quod quaerat illo! Sunt eligendi
-            aspernatur id tempore? Laboriosam beatae sequi nemo debitis odio
-            consectetur, adipisci animi, obcaecati expedita eaque alias dolores
-            aspernatur asperiores molestias ipsam repellendus, placeat
-            praesentium quod incidunt voluptatem facere natus officiis ut.
-            Iusto, dolor! Facere cupiditate expedita eveniet reprehenderit! Eos
-            minima hic consequatur corrupti iure rem aliquid tempora enim vel
-            quam beatae labore provident repellendus, eaque nemo! At beatae
-            deleniti tenetur numquam qui voluptatem earum assumenda recusandae.
-          </p>
-
-          <div className="firm">
-            <h2>About the Firm</h2>
-            <div className="user">
-              <img
-                src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
-                alt=""
-              />
-
-              <div className="info">
-                <span>Ritesh sharma</span>
-                <div className="stars">
-                  <img src="/img/star.png" alt="" />
-                  <img src="/img/star.png" alt="" />
-                  <img src="/img/star.png" alt="" />
-                  <img src="/img/star.png" alt="" />
-                  <img src="/img/star.png" alt="" />
-                  <span>5</span>
-                </div>
-                <button>Contact Us</button>
+          <div className="right">
+            <div className="price">
+              <h3>{data.shortTitle}</h3>
+              <h2>₹ {data.price}</h2>
+            </div>
+            <p>{data.shortDesc}</p>
+            <div className="details">
+              <div className="item">
+                <img src="/img/clock.png" alt="" />
+                <span>{data.deliveryDate} days</span>
+              </div>
+              <div className="item">
+                <img src="/img/recycle.png" alt="" />
+                <span>{data.revisionNumber}Revisision</span>
               </div>
             </div>
-            <div className="box">
-              <div className="items">
-                <div className="item">
-                  <span className="title">From</span>
-                  <span className="desc">India, Bihar</span>
+            <div className="feature">
+              {data.features.map((feature) => (
+                <div className="item" key={feature}>
+                  <img src="/img/greencheck.png" alt="" />
+                  <span>{feature}</span>
                 </div>
-                <div className="item">
-                  <span className="title">From</span>
-                  <span className="desc">India, Bihar</span>
-                </div>
-                <div className="item">
-                  <span className="title">From</span>
-                  <span className="desc">India, Bihar</span>
-                </div>
-                <div className="item">
-                  <span className="title">From</span>
-                  <span className="desc">India, Bihar</span>
-                </div>
-                <div className="item">
-                  <span className="title">From</span>
-                  <span className="desc">India, Bihar</span>
-                </div>
-              </div>
-              <hr />
-              <p>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Itaque,
-                quasi dicta nulla quibusdam quos vitae!
-              </p>
+              ))}
             </div>
-          </div>
-          <div className="reviews">
-            <h2>Reviews</h2>
-
-            <div className="item">
-              <div className="user">
-                <img
-                  className="pp"
-                  src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
-                  alt=""
-                />
-                <div className="info">
-                  <span>Ritesh Sharma</span>
-                  <div className="country">
-                    <img src="/img/flag.png" alt="" />
-                    <span>India</span>
-                  </div>
-                </div>
-              </div>
-              <div className="stars">
-                <img src="/img/star.png" alt="" />
-                <img src="/img/star.png" alt="" />
-                <img src="/img/star.png" alt="" />
-                <img src="/img/star.png" alt="" />
-                <img src="/img/star.png" alt="" />
-                <span>5</span>
-              </div>
-              <p>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                Quisquam, voluptatum.
-              </p>
-              <div className="helpful">
-                <span>Helpful?</span>
-                <img src="/img/like.png" alt="" />
-                <span>Yes</span>
-                <img src="/img/dislike.png" alt="" />
-                <span>No</span>
-              </div>
-            </div>
-            <hr />
-
-            <div className="item">
-              <div className="user">
-                <img
-                  className="pp"
-                  src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
-                  alt=""
-                />
-                <div className="info">
-                  <span>Ritesh Sharma</span>
-                  <div className="country">
-                    <img src="/img/flag.png" alt="" />
-                    <span>India</span>
-                  </div>
-                </div>
-              </div>
-              <div className="stars">
-                <img src="/img/star.png" alt="" />
-                <img src="/img/star.png" alt="" />
-                <img src="/img/star.png" alt="" />
-                <img src="/img/star.png" alt="" />
-                <img src="/img/star.png" alt="" />
-                <span>5</span>
-              </div>
-              <p>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                Quisquam, voluptatum.
-              </p>
-              <div className="helpful">
-                <span>Helpful?</span>
-                <img src="/img/like.png" alt="" />
-                <span>Yes</span>
-                <img src="/img/dislike.png" alt="" />
-                <span>No</span>
-              </div>
-            </div>
-            <hr />
-
-            <div className="item">
-              <div className="user">
-                <img
-                  className="pp"
-                  src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
-                  alt=""
-                />
-                <div className="info">
-                  <span>Ritesh Sharma</span>
-                  <div className="country">
-                    <img src="/img/flag.png" alt="" />
-                    <span>India</span>
-                  </div>
-                </div>
-              </div>
-              <div className="stars">
-                <img src="/img/star.png" alt="" />
-                <img src="/img/star.png" alt="" />
-                <img src="/img/star.png" alt="" />
-                <img src="/img/star.png" alt="" />
-                <img src="/img/star.png" alt="" />
-                <span>5</span>
-              </div>
-              <p>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                Quisquam, voluptatum.
-              </p>
-              <div className="helpful">
-                <span>Helpful?</span>
-                <img src="/img/like.png" alt="" />
-                <span>Yes</span>
-                <img src="/img/dislike.png" alt="" />
-                <span>No</span>
-              </div>
-            </div>
-            <hr />
+            <button>Continue</button>
           </div>
         </div>
-        <div className="right">
-          <div className="price">
-            <h3>Audit Tax</h3>
-            <h2>₹ 500</h2>
-          </div>
-          <p>auditing the tax of your business is a must for any business </p>
-          <div className="details">
-            <div className="item">
-              <img src="/img/clock.png" alt="" />
-              <span>3 days</span>
-            </div>
-            <div className="item">
-              <img src="/img/recycle.png" alt="" />
-              <span>3 Revisision</span>
-            </div>
-          </div>
-          <div className="feature">
-            <div className="item">
-              <img src="/img/greencheck.png" alt="" />
-              <span>Statutory audit</span>
-            </div>
-            <div className="item">
-              <img src="/img/greencheck.png" alt="" />
-              <span>internal audit</span>
-            </div>
-            <div className="item">
-              <img src="/img/greencheck.png" alt="" />
-              <span>Income Tax audit</span>
-            </div>
-            <div className="item">
-              <img src="/img/greencheck.png" alt="" />
-              <span>Service Tax audit</span>
-            </div>
-
-            <div className="item">
-              <img src="/img/greencheck.png" alt="" />
-              <span>Stock audit</span>
-            </div>
-            <div className="item">
-              <img src="/img/greencheck.png" alt="" />
-              <span>due diligence</span>
-            </div>
-          </div>
-          <button>Continue</button>
-        </div>
-      </div>
+      )}
     </div>
   );
 };
