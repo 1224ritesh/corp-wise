@@ -33,7 +33,7 @@ export const getConversations = async (req, res, next) => {
             // if the user is seller then it will find the conversation with the sellerId
             // if the user is buyer then it will find the conversation with the buyerId
             req.isSeller ? { sellerId: req.userId } : { buyerId: req.userId }
-        );
+        ).sort({ updatedAt: -1 });
         res.status(200).send(conversations);
 
     } catch (err) {
@@ -44,8 +44,8 @@ export const getConversations = async (req, res, next) => {
 
 export const getSingleConversation = async (req, res, next) => {
     try {
-       
         const conversation = await Conversation.findOne({ id: req.params.id });
+        if (!conversation) return next(createError(404, "not found"));
         res.status(200).send(conversation);
     } catch (err) {
         next(err);
@@ -61,7 +61,7 @@ export const updateConversation = async (req, res, next) => {
                 // readBySeller: true,
                 // readByBuyer: true,
 
-                
+
                 ...(req.isSeller ? { readBySeller: true } : { readByBuyer: true }),
 
             },
