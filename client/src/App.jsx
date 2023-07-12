@@ -10,6 +10,8 @@ import Messages from "./pages/messages/Messages.jsx";
 import Message from "./pages/message/Message.jsx";
 import Register from "./pages/register/Register.jsx";
 import Login from "./pages/login/Login.jsx";
+import Pay from "./pages/pay/Pay.jsx";
+import Success from "./pages/success/Success.jsx";
 import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
 import "./app.scss";
 
@@ -88,6 +90,14 @@ function App() {
         {
           path: "/message/:id",
           element: <Message></Message>,
+        },
+        {
+          path: "/pay/:id",
+          element: <Pay></Pay>,
+        },
+        {
+          path: "/success",
+          element: <Success></Success>,
         },
       ],
     },

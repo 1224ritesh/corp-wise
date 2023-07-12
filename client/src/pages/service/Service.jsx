@@ -6,6 +6,7 @@ import "./Service.scss";
 import { Slider } from "infinite-react-carousel/lib";
 import { useParams } from "react-router-dom";
 import Reviews from "../../components/reviews/Reviews";
+import { Link } from "react-router-dom";
 
 const Service = () => {
   const { id } = useParams();
@@ -173,7 +174,9 @@ const Service = () => {
                 </div>
               ))}
             </div>
-            <button>Continue</button>
+            <Link to={`/pay/${id}`}>
+              <button>Continue</button>
+            </Link>
           </div>
         </div>
       )}

@@ -48,29 +48,31 @@ const Orders = () => {
             <h1>My Orders</h1>
           </div>
           <table>
-            <tr>
-              <th>Image</th>
-              <th>Title</th>
-              <th>Price</th>
-              <th>Contact</th>
-            </tr>
-            {data.map((order) => (
-              <tr key={order._id}>
-                <td>
-                  <img className="img" src={order.img} alt="" />
-                </td>
-                <td>{order.title}</td>
-                <td>{order.price}</td>
-                <td>
-                  <img
-                    className="delete"
-                    src="/img/message.png"
-                    alt=""
-                    onClick={() => handleContact(order)}
-                  />
-                </td>
+            <tbody>
+              <tr>
+                <th>Image</th>
+                <th>Title</th>
+                <th>Price</th>
+                <th>Contact</th>
               </tr>
-            ))}
+              {data.map((order) => (
+                <tr key={order._id}>
+                  <td>
+                    <img className="img" src={order.img} alt="" />
+                  </td>
+                  <td>{order.title}</td>
+                  <td>{order.price}</td>
+                  <td>
+                    <img
+                      className="delete"
+                      src="/img/message.png"
+                      alt=""
+                      onClick={() => handleContact(order)}
+                    />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
           </table>
         </div>
       )}
